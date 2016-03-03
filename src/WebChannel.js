@@ -6,7 +6,8 @@ export default class WebChannel {
   constructor (options = {}) {
     this.defaults = {
       connector: cs.WEBRTC_SERVICE,
-      topology: cs.FULLYCONNECTED_SERVICE
+      topology: cs.FULLYCONNECTED_SERVICE,
+      protocol: cs.EXCHANGEPROTOCOL_SERVICE
     }
     this.settings = Object.assign({}, this.defaults, options)
 
@@ -24,7 +25,7 @@ export default class WebChannel {
 
   leave () {}
   send (data) {
-    let protocol = ServiceProvider.get(this.protocol)
+    let protocol = ServiceProvider.get(this.settings.protocol)
     this.topologyService.broadcast(this, protocol.message(
       cs.USER_DATA,
       {id: this.myID, data}

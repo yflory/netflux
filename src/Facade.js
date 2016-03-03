@@ -15,16 +15,18 @@ export default class Facade {
 
   join (key, options = {}) {
     let defaults = {
-      connector: 'WebRTCService'
+      connector: 'WebRTCService',
+      protocol: 'ExchangeProtocolService'
     }
     let settings = Object.assign({}, defaults, options)
     let connector = ServiceProvider.get(settings.connector)
-    let protocol = ServiceProvider.get('ExchangeProtocolService')
+    let protocol = ServiceProvider.get(settings.protocol)
+    let connectorOptions = {signaling: settings.signaling, facade: this};
     return new Promise((resolve, reject) => {
       connector
-        .join(key)
+        .join(key, connectorOptions)
         .then((channel) => {
-          let webChannel = new WebChannel({connector: settings.connector})
+          let webChannel = new WebChannel(options)
           channel.webChannel = webChannel
           channel.onmessage = protocol.onmessage
           webChannel.channels.add(channel)

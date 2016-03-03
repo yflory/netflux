@@ -10,5 +10,8 @@ export const YOUR_NEW_ID = 5
 export const SERVICE_DATA = 3
 
 export const WEBRTC_SERVICE = 'WebRTCService'
+export const WEBSOCKET_SERVICE = 'WebSocketService'
 export const FULLYCONNECTED_SERVICE = 'FullyConnectedService'
+export const WS_SERVICE = 'WSService'
 export const EXCHANGEPROTOCOL_SERVICE = 'ExchangeProtocolService'
+export const WSPROTOCOL_SERVICE = 'WSProtocolService'
