@@ -6,7 +6,8 @@ export default class WebChannel {
   constructor (options = {}) {
     this.defaults = {
       connector: cs.WEBRTC_SERVICE,
-      topology: cs.FULLYCONNECTED_SERVICE
+      topology: cs.FULLYCONNECTED_SERVICE,
+      protocol: cs.EXCHANGEPROTOCOL_SERVICE
     }
     this.settings = Object.assign({}, this.defaults, options)
 
@@ -14,6 +15,8 @@ export default class WebChannel {
     this.protocol = cs.EXCHANGEPROTOCOL_SERVICE
 
     // Public attributes
+    this.topology = this.settings.topology
+    this.topologyService = ServiceProvider.get(this.topology)
     this.id
     this.myID = this._generateID()
     this.channels = new Set()
@@ -24,7 +27,9 @@ export default class WebChannel {
 
   leave () {}
   send (data) {
-    let protocol = ServiceProvider.get(this.protocol)
+    console.log('send');
+    console.log(this.topology);
+    let protocol = ServiceProvider.get(this.settings.protocol)
     this.topologyService.broadcast(this, protocol.message(
       cs.USER_DATA,
       {id: this.myID, data}
@@ -65,12 +70,13 @@ export default class WebChannel {
   isInviting () {}
 
   set topology (topologyServiceName) {
+    console.log("setTopo");
     this.settings.topology = topologyServiceName
     this.topologyService = ServiceProvider.get(topologyServiceName)
   }
 
   get topology () {
-    return this.settigns.topology
+    return this.settings.topology
   }
 
   _generateID () {
