@@ -1,4 +1,4 @@
-export default class WSService {
+export default class StarTopologyService {
 
   constructor (options = {}) {}
 

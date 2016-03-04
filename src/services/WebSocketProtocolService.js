@@ -1,7 +1,7 @@
 import * as cs from '../constants'
 import ServiceProvider from '../ServiceProvider'
 
-export default class WSProtocolService {
+export default class WebSocketProtocolService {
 
   constructor (options = {}) {}
 
@@ -9,11 +9,10 @@ export default class WSProtocolService {
     let msg = JSON.parse(e.data)
     let socket = e.currentTarget
     let webChannel = socket.webChannel
-    let topology = cs.WS_SERVICE
+    let topology = cs.STAR_SERVICE
     let topologyService = ServiceProvider.get(topology)
 
     if (msg[0] !== 0) {
-      console.log(JSON.stringify(msg));
       return;
     }
     if (msg[1] === 'IDENT') {
@@ -28,7 +27,6 @@ export default class WSProtocolService {
       return;
     }
     if (msg[2] === 'MSG') {
-      console.log("MSG " + JSON.stringify(msg));
     }
     // We have received a new direct message from another user
     if (msg[2] === 'MSG' && msg[3] === socket.uid) {
@@ -44,15 +42,12 @@ export default class WSProtocolService {
 
       if (msg[1] === socket.uid) { // If the user catches himself registering, he is synchronized with the server
         webChannel.onopen();
-        console.log('joined');
       }
       else { // Trigger onJoining() when another user is joining the channel
 
         // Register the user in the list of peers in the channel
         var linkQuality = (msg[1] === '_HISTORY_KEEPER_') ? 1000 : 0;
         var sendToPeer = function(data) {
-          console.log('sendToPeer'+msg[1]);
-          console.log(data);
           topologyService.sendTo(msg[1], webChannel, {type : 'MSG', msg: data});
         }
         var peer = {id: msg[1], connector: socket, linkQuality: linkQuality, send: sendToPeer};
@@ -60,7 +55,6 @@ export default class WSProtocolService {
           webChannel.peers.push(peer);
         }
 
-        console.log("onJoining");
         if(typeof webChannel.onJoining === "function")
           webChannel.onJoining(msg[1]);
       }
@@ -77,7 +71,6 @@ export default class WSProtocolService {
       //TODO Use Peer instead of peer.id (msg[1]) :
       if(typeof webChannel.onLeaving === "function")
         webChannel.onLeaving(msg[1], webChannel);
-      console.log("LEAVE " + JSON.stringify(msg));
     }
   }
 

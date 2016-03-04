@@ -1,10 +1,10 @@
 import * as cs from './constants'
 import FullyConnectedService from './services/topologies/FullyConnectedService'
-import WSService from './services/topologies/WSService'
+import StarTopologyService from './services/topologies/StarTopologyService'
 import WebRTCService from './services/connectors/WebRTCService'
 import WebSocketService from './services/connectors/WebSocketService'
 import ExchangeProtocolService from './services/ExchangeProtocolService'
-import WSProtocolService from './services/WSProtocolService'
+import WebServiceProtocolService from './services/WebSocketProtocolService'
 
 let services = new Map()
 
@@ -21,14 +21,14 @@ export default class ServiceProvider {
       case cs.FULLYCONNECTED_SERVICE:
         service = new FullyConnectedService(options)
         break
-      case cs.WS_SERVICE:
-        service = new WSService(options)
+      case cs.STAR_SERVICE:
+        service = new StarTopologyService(options)
         break
       case cs.EXCHANGEPROTOCOL_SERVICE:
         service = new ExchangeProtocolService(options)
         break
       case cs.WSPROTOCOL_SERVICE:
-        service = new WSProtocolService(options)
+        service = new WebServiceProtocolService(options)
         break
     }
     services.set(code, service)
