@@ -36,8 +36,10 @@ export default class WebSocketProtocolService {
     }
     if (msg[2] === 'JOIN' && (webChannel.id == null || webChannel.id === msg[3])) {
       if(!webChannel.id) { // New unnamed channel : get its name from the first "JOIN" message
-        var chanName = window.location.hash = msg[3];
-        webChannel.id = chanName;
+        if(!window.location.hash) {
+          var chanName = window.location.hash = msg[3];
+        }
+        webChannel.id = msg[3];
       }
 
       if (msg[1] === socket.uid) { // If the user catches himself registering, he is synchronized with the server
@@ -59,7 +61,7 @@ export default class WebSocketProtocolService {
           webChannel.onJoining(msg[1]);
       }
     }
-    // We have received a new message in that channel
+    // We have received a new message in that channel from another peer
     if (msg[2] === 'MSG' && msg[3] === webChannel.id) {
       // Find the peer who sent the message and display it
       //TODO Use Peer instead of peer.id (msg[1]) :
@@ -80,19 +82,9 @@ export default class WebSocketProtocolService {
       case cs.USER_DATA:
         type = 'MSG'
         break
-      /*case cs.SERVICE_DATA:
-        msg.service = data.service
-        msg.data = Object.assign({}, data.data)
-        break
-      case cs.YOUR_NEW_ID:
-        type = 'JOIN'
-        break*/
       case cs.JOIN_START:
         type = 'JOIN'
         break
-      /*case cs.JOIN_FINISH:
-        msg.id = data
-        break*/
     }
     return {type: type, msg: data.data}
   }
