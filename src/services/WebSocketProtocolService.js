@@ -6,17 +6,12 @@ export default class WebSocketProtocolService {
   constructor (options = {}) {}
 
   onmessage (e) {
-    console.log('receiving');
-    console.log(e.data);
     let msg = e.data
     let socket = e.currentTarget
     let webChannel = socket.webChannel
     let topology = cs.STAR_SERVICE
-    console.log("okokok");
     webChannel.topology = topology;
-    console.log(topology);
     webChannel.topologyService = ServiceProvider.get(topology);
-    console.log(webChannel.topologyService);
     webChannel.onMessage('', msg);
     
     /*

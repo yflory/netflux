@@ -28,7 +28,6 @@ export default class ServiceProvider {
         service = new ExchangeProtocolService(options)
         break
       case cs.WSPROTOCOL_SERVICE:
-        console.log("bonservice..........");
         service = new WebSocketProtocolService(options)
         break
     }

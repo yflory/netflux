@@ -20,26 +20,20 @@ export default class Facade {
     }
     let settings = Object.assign({}, defaults, options)
     let connector = ServiceProvider.get(settings.connector)
-    console.log(settings.protocol);
     let protocol = ServiceProvider.get(settings.protocol)
-    console.log(protocol.onmessage);
     let connectorOptions = {signaling: settings.signaling, facade: this};
     return new Promise((resolve, reject) => {
-      console.log('test111test');
       connector
         .join(key, connectorOptions)
         .then((channel) => {
-          console.log('testtest');
           let webChannel = new WebChannel(options)
           channel.webChannel = webChannel
-          console.log(protocol);
-          console.log(channel);
           channel.onmessage = protocol.onmessage;
-          console.log(channel);
-          console.log(channel.onmessage);
           webChannel.channels.add(channel)
-          console.log('test22232test');
-          /*webChannel.onopen = () => { */resolve(webChannel)// }
+          webChannel.onopen = () => { resolve(webChannel) }
+          if(settings.openWebChannel && settings.openWebChannel === true) {
+            webChannel.onopen();
+          }
         })
     })
   }

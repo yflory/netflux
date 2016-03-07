@@ -4,8 +4,6 @@ export default class StarTopologyService {
 
 
   broadcast (webChannel, data) {
-    console.log('sending');
-    console.log(data);
     for (let c of webChannel.channels) {
       c.send(data)
     }

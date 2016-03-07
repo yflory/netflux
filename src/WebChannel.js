@@ -27,8 +27,6 @@ export default class WebChannel {
 
   leave () {}
   send (data) {
-    console.log('send');
-    console.log(this.topology);
     let protocol = ServiceProvider.get(this.settings.protocol)
     this.topologyService.broadcast(this, protocol.message(
       cs.USER_DATA,
@@ -70,7 +68,6 @@ export default class WebChannel {
   isInviting () {}
 
   set topology (topologyServiceName) {
-    console.log("setTopo");
     this.settings.topology = topologyServiceName
     this.topologyService = ServiceProvider.get(topologyServiceName)
   }
