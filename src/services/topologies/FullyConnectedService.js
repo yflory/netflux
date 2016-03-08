@@ -54,9 +54,12 @@ export default class FullyConnectedService {
   }
 
   broadcast (webChannel, data) {
-    for (let c of webChannel.channels) {
-      c.send(data)
-    }
+    return new Promise(function(resolve, reject) {
+      for (let c of webChannel.channels) {
+        c.send(data)
+      }
+      resolve();
+    });
   }
 
   sendTo (id, webChannel, data) {

@@ -1,5 +1,6 @@
 // API user's message
 export const USER_DATA = 0
+export const GET_HISTORY = 6
 
 // Internal messages
 export const JOIN_START = 2

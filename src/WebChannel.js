@@ -25,11 +25,25 @@ export default class WebChannel {
 
   leave () {}
   send (data) {
-    let protocol = ServiceProvider.get(this.settings.protocol)
-    this.topologyService.broadcast(this, protocol.message(
-      cs.USER_DATA,
-      {id: this.myID, data}
-    ))
+    let channel = this;
+    return new Promise(function(resolve, reject) {
+      let protocol = ServiceProvider.get(channel.settings.protocol)
+      channel.topologyService.broadcast(channel, protocol.message(
+        cs.USER_DATA,
+        {id: channel.myID, data}
+      )).then(resolve, reject)
+    });
+  }
+
+  getHistory (historyKeeperID) {
+    let channel = this;
+    return new Promise(function(resolve, reject) {
+      let protocol = ServiceProvider.get(channel.settings.protocol)
+      channel.topologyService.sendTo(historyKeeperID, channel, protocol.message(
+        cs.GET_HISTORY,
+        {id: channel.myID, data: ''}
+      )).then(resolve, reject)
+    });
   }
 
   openForJoining (options = {}) {
@@ -57,7 +71,7 @@ export default class WebChannel {
             ))
             this.onJoining(id)
           })
-      })
+      }, settings)
       .then((data) => {
         return data
       })
