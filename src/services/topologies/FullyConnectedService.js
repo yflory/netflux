@@ -3,7 +3,7 @@ import ServiceProvider from '../../ServiceProvider'
 
 export default class FullyConnectedService {
 
-  constructor (options = {}) {}
+  constructor (options = {}) {console.log('SERVICE FULLY CONNECTED CONSTRUCTED');}
 
   addStart (channel, webChannel) {
     let protocol = ServiceProvider.get(cs.EXCHANGEPROTOCOL_SERVICE)
@@ -63,11 +63,16 @@ export default class FullyConnectedService {
   }
 
   sendTo (id, webChannel, data) {
-    for (let c of webChannel.channels) {
-      if (c.peerID == id) {
-        c.send(data)
+    console.log('sending to '+id);
+    
+    return new Promise(function(resolve, reject) {
+      for (let c of webChannel.channels) {
+        if (c.peerID == id) {
+          c.send(data)
+        }
       }
-    }
+      resolve();
+    });
   }
 
   leave (webChannel) {
