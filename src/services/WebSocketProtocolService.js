@@ -30,9 +30,11 @@ export default class WebSocketProtocolService {
     }
     // We have received a new direct message from another user
     if (msg[2] === 'MSG' && msg[3] === socket.uid) {
-      // Find the peer exists in one of our channels or create a new one
-      if(typeof socket.facade._onPeerMessage === "function")
-        socket.facade._onPeerMessage(msg[1], msg);
+      // If it comes form the history keeper, send it to the user
+      if(msg[1] === '_HISTORY_KEEPER_') {
+          var msgHistory = JSON.parse(msg[4]);
+          webChannel.onmessage(msgHistory[1], msgHistory[4]);
+      }
     }
     if (msg[2] === 'JOIN' && (webChannel.id == null || webChannel.id === msg[3])) {
       if(!webChannel.id) { // New unnamed channel : get its name from the first "JOIN" message
@@ -65,8 +67,8 @@ export default class WebSocketProtocolService {
     if (msg[2] === 'MSG' && msg[3] === webChannel.id) {
       // Find the peer who sent the message and display it
       //TODO Use Peer instead of peer.id (msg[1]) :
-      if(typeof webChannel.onMessage === "function")
-        webChannel.onMessage(msg[1], msg[4]);
+      if(typeof webChannel.onmessage === "function")
+        webChannel.onmessage(msg[1], msg[4]);
     }
     // Someone else has left the channel, remove him from the list of peers
     if (msg[2] === 'LEAVE' && msg[3] === webChannel.id) {

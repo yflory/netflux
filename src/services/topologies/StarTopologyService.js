@@ -4,17 +4,23 @@ export default class StarTopologyService {
 
 
   broadcast (webChannel, data) {
-    for (let c of webChannel.channels) {
-      let msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg])
-      c.send(msg)
-    }
+    return new Promise(function(resolve, reject) {
+      for (let c of webChannel.channels) {
+        let msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg])
+        c.send(msg)
+      }
+      resolve();
+    });
   }
 
   sendTo (id, webChannel, data) {
-    for (let c of webChannel.channels) {
-      let msg = JSON.stringify([c.seq++, data.type, id, data.msg])
-      c.send(msg)
-    }
+    return new Promise(function(resolve, reject) {
+      for (let c of webChannel.channels) {
+        let msg = JSON.stringify([c.seq++, data.type, id, data.msg])
+        c.send(msg)
+      }
+      resolve();
+    });
   }
 
 }

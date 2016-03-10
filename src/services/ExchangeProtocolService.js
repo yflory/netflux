@@ -15,7 +15,6 @@ export default class ExchangeProtocolService {
         webChannel.onmessage(msg.id, msg.data)
         break
       case cs.GET_HISTORY:
-        console.log("SOMEONE WANTS HISTORY");
         webChannel.onPeerMessage(msg.id, msg.code)
         break
       case cs.SERVICE_DATA:

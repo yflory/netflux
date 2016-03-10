@@ -59,7 +59,6 @@ export default class WebRTCService {
 
     return new Promise((resolve, reject) => {
       let connections = []
-      console.log(settings);
       let socket = new window.WebSocket(settings.signaling)
       socket.onopen = () => {
         socket.send(JSON.stringify({key: settings.key}))
@@ -111,10 +110,8 @@ export default class WebRTCService {
     return new Promise((resolve, reject) => {
       let connection
       let socket = new window.WebSocket(settings.signaling)
-      console.log('Socket created');
       socket.onopen = () => {
         connection = new this.RTCPeerConnection(settings.webRTCOptions)
-        console.log('RTC created');
         connection.onicecandidate = (e) => {
           if (e.candidate !== null) {
             let candidate = {
@@ -125,8 +122,6 @@ export default class WebRTCService {
           }
         }
         let dc = connection.createDataChannel(key)
-        console.log('data channel created');
-        console.log(dc);
         dc.onopen = () => { resolve(dc) }
         connection.createOffer((offer) => {
           connection.setLocalDescription(offer, () => {
@@ -136,8 +131,6 @@ export default class WebRTCService {
       }
       socket.onmessage = (e) => {
         let msg = JSON.parse(e.data)
-        console.log('message');
-        console.log(msg);
         if (Reflect.has(msg, 'data')) {
           if (Reflect.has(msg.data, 'answer')) {
             let sd = Object.assign(new this.RTCSessionDescription(), msg.data.answer)

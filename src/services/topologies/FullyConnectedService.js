@@ -63,8 +63,6 @@ export default class FullyConnectedService {
   }
 
   sendTo (id, webChannel, data) {
-    console.log('sending to '+id);
-    
     return new Promise(function(resolve, reject) {
       for (let c of webChannel.channels) {
         if (c.peerID == id) {

@@ -27,7 +27,7 @@ export default class WebChannel {
   send (data) {
     let channel = this;
     return new Promise(function(resolve, reject) {
-      if(channel.channels.size === 0) {console.log('sizenull'); resolve();}
+      if(channel.channels.size === 0) {resolve();}
       let protocol = ServiceProvider.get(channel.settings.protocol)
       channel.topologyService.broadcast(channel, protocol.message(
         cs.USER_DATA,
@@ -39,8 +39,6 @@ export default class WebChannel {
   getHistory (historyKeeperID) {
     let channel = this;
     return new Promise(function(resolve, reject) {
-      console.log(channel);
-      console.log('Je veux history '+channel.myID);
       let protocol = ServiceProvider.get(channel.settings.protocol)
       channel.topologyService.sendTo(historyKeeperID, channel, protocol.message(
         cs.GET_HISTORY,
