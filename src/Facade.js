@@ -31,7 +31,7 @@ export default class Facade {
           channel.onmessage = protocol.onmessage
           webChannel.channels.add(channel)
           webChannel.onopen = () => { resolve(webChannel) }
-        })
+        }, reject)
     })
   }
 

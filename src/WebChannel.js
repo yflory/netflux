@@ -23,7 +23,10 @@ export default class WebChannel {
     this.onmessage
   }
 
-  leave () {}
+  leave () {
+      this.topologyService.leave(this)
+  }
+
   send (data) {
     let channel = this;
     return new Promise(function(resolve, reject) {
@@ -47,14 +50,13 @@ export default class WebChannel {
     });
   }
 
-  sendTo (id, msg) {
+  sendTo (fromId, toId, msg) {
     let channel = this;
     return new Promise(function(resolve, reject) {
       let protocol = ServiceProvider.get(channel.settings.protocol)
-      console.log('WCsendTo '+id);
-      channel.topologyService.sendTo(id, channel, protocol.message(
+      channel.topologyService.sendTo(toId, channel, protocol.message(
         cs.USER_DATA,
-        {id: channel.myID, data: msg}
+        {id: fromId, data: msg}
       )).then(resolve, reject)
     });
   }

@@ -3,7 +3,7 @@ import ServiceProvider from '../../ServiceProvider'
 
 export default class FullyConnectedService {
 
-  constructor (options = {}) {console.log('SERVICE FULLY CONNECTED CONSTRUCTED');}
+  constructor (options = {}) {}
 
   addStart (channel, webChannel) {
     let protocol = ServiceProvider.get(cs.EXCHANGEPROTOCOL_SERVICE)
@@ -74,7 +74,11 @@ export default class FullyConnectedService {
   }
 
   leave (webChannel) {
-    this.broadcast(webChannel)
+    let protocol = ServiceProvider.get(cs.EXCHANGEPROTOCOL_SERVICE)
+    this.broadcast(webChannel, protocol.message(
+        cs.LEAVING,
+        {id: webChannel.myID}
+      ))
   }
 
   _generateID () {

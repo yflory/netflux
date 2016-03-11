@@ -17,6 +17,9 @@ export default class ExchangeProtocolService {
       case cs.GET_HISTORY:
         webChannel.onPeerMessage(msg.id, msg.code)
         break
+      case cs.LEAVING:
+        webChannel.onLeaving(msg.id)
+        break
       case cs.SERVICE_DATA:
         let service = ServiceProvider.get(msg.service)
         service.onmessage(channel, msg.data)
@@ -48,6 +51,9 @@ export default class ExchangeProtocolService {
         msg.data = data.data
         break
       case cs.GET_HISTORY:
+        msg.id = data.id
+        break
+      case cs.LEAVING:
         msg.id = data.id
         break
       case cs.SERVICE_DATA:

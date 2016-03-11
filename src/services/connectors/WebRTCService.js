@@ -129,6 +129,9 @@ export default class WebRTCService {
           }, reject)
         }, reject)
       }
+      socket.onclose = (e) => {
+        reject(e);
+      }
       socket.onmessage = (e) => {
         let msg = JSON.parse(e.data)
         if (Reflect.has(msg, 'data')) {
