@@ -21,6 +21,10 @@ export default class FullyConnectedService {
 
       if (webChannel.channels.size === 0) {
         webChannel.channels.add(channel)
+        channel.onclose = () => {
+          webChannel.onLeaving(channel.peerID)
+          webChannel.channels.delete(channel);
+        }
         resolve(channel.peerID)
       } else {
         webChannel.successfullyConnected = new Map()
@@ -43,7 +47,12 @@ export default class FullyConnectedService {
 
   addFinish (webChannel, id) {
     if (id != webChannel.myID) {
+      let channel = webChannel.aboutToJoin.get(id)
       webChannel.channels.add(webChannel.aboutToJoin.get(id))
+      channel.onclose = () => {
+        webChannel.onLeaving(channel.peerID)
+        webChannel.channels.delete(channel);
+      }
       //webChannel.aboutToJoin.delete(id)
       if (Reflect.has(webChannel, 'successfullyConnected')) {
         webChannel.successfullyConnected.delete(id)
@@ -74,11 +83,7 @@ export default class FullyConnectedService {
   }
 
   leave (webChannel) {
-    let protocol = ServiceProvider.get(cs.EXCHANGEPROTOCOL_SERVICE)
-    this.broadcast(webChannel, protocol.message(
-        cs.LEAVING,
-        {id: webChannel.myID}
-      ))
+    this.broadcast(webChannel)
   }
 
   _generateID () {

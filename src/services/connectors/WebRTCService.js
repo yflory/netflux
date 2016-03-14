@@ -122,7 +122,9 @@ export default class WebRTCService {
           }
         }
         let dc = connection.createDataChannel(key)
-        dc.onopen = () => { resolve(dc) }
+        dc.onopen = () => { 
+          resolve(dc) 
+        }
         connection.createOffer((offer) => {
           connection.setLocalDescription(offer, () => {
             socket.send(JSON.stringify({join: key, data: {offer: connection.localDescription.toJSON()}}))
@@ -187,6 +189,10 @@ export default class WebRTCService {
                   e.channel.webChannel = webChannel
                   e.channel.onmessage = this.protocol.onmessage
                   webChannel.channels.add(e.channel)
+                  e.channel.onclose = () => {
+                    webChannel.onLeaving(e.channel.peerID)
+                    webChannel.channels.delete(e.channel);
+                  }
                 }
               }
               connection.onicecandidate = (e) => {

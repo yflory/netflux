@@ -23,9 +23,7 @@ export default class WebChannel {
     this.onmessage
   }
 
-  leave () {
-      this.topologyService.leave(this)
-  }
+  leave () {}
 
   send (data) {
     let channel = this;
