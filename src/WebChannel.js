@@ -60,13 +60,13 @@ export default class WebChannel {
     });
   }
 
-  sendTo (fromId, toId, msg) {
+  sendTo (id, msg) {
     let channel = this;
     return new Promise(function(resolve, reject) {
       let protocol = ServiceProvider.get(channel.settings.protocol)
-      channel.topologyService.sendTo(toId, channel, protocol.message(
+      channel.topologyService.sendTo(id, channel, protocol.message(
         cs.USER_DATA,
-        {id: fromId, data: msg}
+        {id: channel.myID, data: msg}
       )).then(resolve, reject)
     });
   }
