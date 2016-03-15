@@ -37,6 +37,18 @@ export default class WebChannel {
     });
   }
 
+  sendPing () {
+    let channel = this;
+    return new Promise(function(resolve, reject) {
+      if(channel.channels.size === 0) {resolve();}
+      let protocol = ServiceProvider.get(channel.settings.protocol)
+      channel.topologyService.broadcast(channel, protocol.message(
+        cs.PING,
+        {data: ''}
+      )).then(resolve, reject)
+    });
+  }
+
   getHistory (historyKeeperID) {
     let channel = this;
     return new Promise(function(resolve, reject) {

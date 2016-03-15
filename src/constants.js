@@ -6,6 +6,7 @@ export const GET_HISTORY = 6
 export const JOIN_START = 2
 export const JOIN_FINISH = 4
 export const YOUR_NEW_ID = 5
+export const PING = 7
 
 // Internal message to a specific Service
 export const SERVICE_DATA = 3

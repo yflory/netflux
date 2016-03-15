@@ -34,7 +34,21 @@ export default class ExchangeProtocolService {
       case cs.JOIN_FINISH:
         webChannel.topologyService.addFinish(webChannel, msg.id)
         if (msg.id != webChannel.myID) {
+          // A new user has just registered
           webChannel.onJoining(msg.id)
+        }
+        else {
+          // We're fully synced, trigger onJoining for all existing users
+          let waitForOnJoining = () => {
+              if (typeof webChannel.onJoining !== "function") {
+                 setTimeout( waitForOnJoining, 500)
+                 return
+              }
+              for (let c of webChannel.channels) {
+                webChannel.onJoining(c.peerID)
+              }
+          }
+          waitForOnJoining();
         }
         break
     }
