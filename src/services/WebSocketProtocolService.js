@@ -29,19 +29,21 @@ export default class WebSocketProtocolService {
       socket.send(JSON.stringify(msg));
       return;
     }
-    if (msg[1] === 'ACK' && parseInt(msg[2]) === msg[2]) {
-      var lag = (new Date()).getTime() - msg[2];
-      webChannel.getLag = function() { return lag; };
-      return;
-    }
-    if(msg[1] === 'ACK') {
+    if (msg[1] === 'ACK') {
       var seq = msg[0];
-      if(webChannel.waitingAck[seq]) {
+      if (webChannel.waitingAck[seq]) {
         var newMsg = webChannel.waitingAck[seq];
-        delete webChannel.waitingAck[seq];
+        if (parseInt(newMsg[3]) === newMsg[3]) { // PING message
+          var lag = (new Date()).getTime() - newMsg[3];
+          webChannel.getLag = function() { return lag; };
+        }
+        else {
         if(typeof webChannel.onmessage === "function")
           webChannel.onmessage(newMsg[1], newMsg[4]);
+        }
+        delete webChannel.waitingAck[seq];
       }
+      return;
     }
     // We have received a new direct message from another user
     if (msg[2] === 'MSG' && msg[3] === socket.uid) {
@@ -54,6 +56,7 @@ export default class WebSocketProtocolService {
           var msgHistory = JSON.parse(msg[4]);
           webChannel.onmessage(msgHistory[1], msgHistory[4]);
       }
+      return;
     }
     if (msg[2] === 'JOIN' && (webChannel.id == null || webChannel.id === msg[3])) {
       if(!webChannel.id) { // New unnamed channel : get its name from the first "JOIN" message
@@ -93,6 +96,7 @@ export default class WebSocketProtocolService {
           waitForOnJoining();
         }
       }
+      return;
     }
     // We have received a new message in that channel from another peer
     if (msg[2] === 'MSG' && msg[3] === webChannel.id) {
@@ -100,12 +104,14 @@ export default class WebSocketProtocolService {
       //TODO Use Peer instead of peer.id (msg[1]) :
       if(typeof webChannel.onmessage === "function")
         webChannel.onmessage(msg[1], msg[4]);
+      return;
     }
     // Someone else has left the channel, remove him from the list of peers
     if (msg[2] === 'LEAVE' && msg[3] === webChannel.id) {
       //TODO Use Peer instead of peer.id (msg[1]) :
       if(typeof webChannel.onLeaving === "function")
         webChannel.onLeaving(msg[1], webChannel);
+      return;
     }
   }
 
