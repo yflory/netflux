@@ -9,11 +9,17 @@ export default class StarTopologyService {
         let msg
         if (data.type === 'PING') {
           let date = (new Date()).getTime()
-          // webChannel.lastPing = date;
           msg = JSON.stringify([0, 'PING', date])
         }
         else {
           msg = JSON.stringify([c.seq++, data.type, webChannel.id, data.msg])
+          if(data.type === 'MSG') {
+            let srvMsg = JSON.parse(msg)
+            srvMsg.shift()
+            srvMsg.unshift(webChannel.myID)
+            srvMsg.unshift(0)
+            webChannel.waitingAck[c.seq-1] = srvMsg;
+          }
         }
         c.send(msg)
       }
