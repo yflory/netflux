@@ -16,6 +16,7 @@ export default class WebSocketProtocolService {
     if (msg[0] !== 0 && msg[1] !== 'ACK') {
       return;
     }
+
     if (msg[2] === 'IDENT' && msg[1] === '') {
       socket.uid = msg[3];
       webChannel.myID = msg[3];
@@ -32,14 +33,12 @@ export default class WebSocketProtocolService {
     if (msg[1] === 'ACK') {
       var seq = msg[0];
       if (webChannel.waitingAck[seq]) {
-        var newMsg = webChannel.waitingAck[seq];
-        if (parseInt(newMsg[3]) === newMsg[3]) { // PING message
+        var waitingAck = webChannel.waitingAck[seq];
+        waitingAck.resolve();
+        var newMsg = waitingAck.data;
+        if (newMsg[2] === 'PING') { // PING message : set the lag
           var lag = (new Date()).getTime() - newMsg[3];
           webChannel.getLag = function() { return lag; };
-        }
-        else {
-        if(typeof webChannel.onmessage === "function")
-          webChannel.onmessage(newMsg[1], newMsg[4]);
         }
         delete webChannel.waitingAck[seq];
       }
@@ -71,7 +70,7 @@ export default class WebSocketProtocolService {
       }
       else { // Trigger onJoining() when another user is joining the channel
         // Register the user in the list of peers in the channel
-        if(webChannel.peers.length === 0 && msg[1].length === 16) { // We've just catched the history keeper
+        if(webChannel.peers.length === 0 && msg[1].length === 16) { // We've just catched the history keeper (16 characters length name)
           history_keeper = msg[1];
           webChannel.hc = history_keeper;
         }

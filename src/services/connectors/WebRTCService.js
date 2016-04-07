@@ -122,8 +122,8 @@ export default class WebRTCService {
           }
         }
         let dc = connection.createDataChannel(key)
-        dc.onopen = () => { 
-          resolve(dc) 
+        dc.onopen = () => {
+          resolve(dc)
         }
         connection.createOffer((offer) => {
           connection.setLocalDescription(offer, () => {

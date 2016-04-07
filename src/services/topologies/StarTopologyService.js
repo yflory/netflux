@@ -8,8 +8,8 @@ export default class StarTopologyService {
       for (let c of webChannel.channels) {
         let msg
         // Create the string message
+        let date = (new Date()).getTime()
         if (data.type === 'PING') {
-          let date = (new Date()).getTime()
           msg = JSON.stringify([c.seq++, 'PING', date])
         }
         else {
@@ -21,11 +21,10 @@ export default class StarTopologyService {
         srvMsg.shift()
         srvMsg.unshift(webChannel.myID)
         srvMsg.unshift(0)
-        webChannel.waitingAck[c.seq-1] = srvMsg;
+        webChannel.waitingAck[c.seq-1] = {resolve: resolve, reject: reject, time: date, data: srvMsg};
         // Send the message to the server
         c.send(msg)
       }
-      resolve();
     });
   }
 

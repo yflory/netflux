@@ -32,7 +32,7 @@ export default class Facade {
           webChannel.channels.add(channel)
           webChannel.onopen = () => { 
             resolve(webChannel) 
-            }
+          }
         }, reject)
     })
   }
